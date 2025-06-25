@@ -20,12 +20,17 @@ export class BinanceSpotWebsocket extends SharedWebsocket {
   onMessage = ({ data }: MessageEvent) => {
     if (!this.isDisposed) {
       try {
-        const ts = Number(data.match(/"E":(\d+)/)?.[1]);
-        const now = Number(new Date());
-        const diff = now - ts;
-        this.setLatency(diff);
-      } catch {
-        // do nothing
+        const parsed = JSON.parse(data as string);
+        const ts = parsed.E ?? parsed?.data?.E;
+
+        if (typeof ts === 'number') {
+          const diff = Date.now() - Number(ts);
+          this.setLatency(diff);
+        } else {
+          console.warn('BinanceSpotWebsocket: timestamp not found', parsed);
+        }
+      } catch (err) {
+        console.warn('BinanceSpotWebsocket: failed to parse message', err);
       }
     }
   };
