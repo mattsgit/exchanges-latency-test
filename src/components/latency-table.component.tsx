@@ -1,4 +1,4 @@
-import { For, onCleanup, onMount } from 'solid-js';
+import { For, Show, createMemo, onCleanup, onMount } from 'solid-js';
 
 import { BinanceFuturesWebsocket } from '~/exchanges/binance-futures.ws';
 import { BinanceSpotWebsocket } from '~/exchanges/binance-spot.ws';
@@ -57,6 +57,21 @@ const LatencyTable = () => {
     wooxSpot.close();
     wooxFutures.close();
   });
+
+  const showWarning = createMemo(
+    () =>
+      bybitSpot.hasError() ||
+      bybitFutures.hasError() ||
+      bybitFuturesv3.hasError() ||
+      bybitSpotv3.hasError() ||
+      bybitSpotv1.hasError() ||
+      binanceSpot.hasError() ||
+      binanceFutures.hasError() ||
+      okxSpot.hasError() ||
+      okxFutures.hasError() ||
+      wooxSpot.hasError() ||
+      wooxFutures.hasError()
+  );
 
   const exchanges = [
     {
@@ -128,7 +143,13 @@ const LatencyTable = () => {
   ];
 
   return (
-    <table class="table table-auto w-full max-w-[700px] mx-auto">
+    <>
+      <Show when={showWarning()}>
+        <div class="text-center text-orange-500 text-sm mb-2">
+          Connection issues detected. Results may be inaccurate.
+        </div>
+      </Show>
+      <table class="table table-auto w-full max-w-[700px] mx-auto">
       <thead>
         <tr>
           <th class="text-left uppercase">Exchange</th>
@@ -175,6 +196,7 @@ const LatencyTable = () => {
         </tr>
       </tbody>
     </table>
+    </>
   );
 };
 
