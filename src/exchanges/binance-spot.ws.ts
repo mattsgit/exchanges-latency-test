@@ -4,7 +4,7 @@ export class BinanceSpotWebsocket extends SharedWebsocket {
   constructor() {
     // use the official Binance secure websocket endpoint
     // explicitly specify port 9443 to avoid connection errors
-    super('wss://stream.binance.com:9443/ws');
+    super('wss://data-stream.binance.vision/ws');
   }
 
   onOpen = () => {

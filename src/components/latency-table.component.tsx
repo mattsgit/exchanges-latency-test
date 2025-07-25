@@ -100,7 +100,7 @@ const LatencyTable = () => {
     },
     {
       name: 'Bybit Spot v1',
-      stream: 'instrument_info.100ms.BTCUSDT',
+      stream: 'tickers.BTCUSDT',
       latency: bybitSpotv1.latency,
       link: 'https://partner.bybit.com/b/safecex',
     },

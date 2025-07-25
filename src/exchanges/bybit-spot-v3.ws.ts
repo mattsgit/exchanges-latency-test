@@ -2,7 +2,7 @@ import { SharedWebsocket } from './shared.ws';
 
 export class BybitSpotv3Websocket extends SharedWebsocket {
   constructor() {
-    super('wss://stream-testnet.bybit.com/spot/public/v3  ');
+    super('wss://stream.bybit.com/v5/public/spot');
   }
 
   onOpen = () => {
@@ -21,7 +21,7 @@ export class BybitSpotv3Websocket extends SharedWebsocket {
       try {
         const ts = Number(data.match(/"ts":(\d+)/)?.[1]);
         const now = Number(new Date());
-        const diff = Math.round(now - ts);
+        const diff = now - ts;
         this.setLatency(diff);
       } catch {
         // do nothing

@@ -8,32 +8,6 @@ const Home = () => {
       <h1 class="text-center max-6-xs text-6xl text-sky-700 font-thin uppercase my-16">
         EXCHANGES LATENCY TESTER
       </h1>
-      <a href="https://tuleep.trade" target="_blank" rel="noreferrer">
-        <div class="mx-auto max-w-[600px] mb-8 flex border rounded-md px-3 py-2">
-          <div class="mr-4 pt-2">
-            <img alt="tuleep.trade" src="https://tuleep.trade/tulip.png" />
-          </div>
-          <div>
-            Sponsored by <strong>tuleep.trade</strong>, your gateway to success
-            in the fast-paced world of cryptocurrency news trading, with
-            innovative tools and features to help you stay ahead of the curve.
-          </div>
-        </div>
-      </a>
-      <div class="mx-auto max-w-[600px] mb-20">
-        Are you tired of slow exchange servers that delay your trades and cause
-        you to miss out on opportunities?
-        <br />
-        <br />
-        Look no further than our website, which calculates the exchange latency
-        between your computer and exchange servers in real-time using websocket
-        data streams.
-        <br />
-        <br />
-        With this tool, you can easily find the best exchange to trade from your
-        location, ensuring you never miss a beat in the fast-paced world of
-        trading.
-      </div>
       <TimeSyncCheck />
       <LatencyTable />
       <div class="h-12" />

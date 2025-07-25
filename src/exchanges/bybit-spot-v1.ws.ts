@@ -2,7 +2,7 @@ import { SharedWebsocket } from './shared.ws';
 
 export class BybitSpotv1Websocket extends SharedWebsocket {
   constructor() {
-    super('wss://stream.bybit.com/realtime_public');
+    super('wss://stream.bybit.com/v5/public/spot');
   }
 
   onOpen = () => {
@@ -10,7 +10,7 @@ export class BybitSpotv1Websocket extends SharedWebsocket {
       this.ws?.send?.(
         JSON.stringify({
           op: 'subscribe',
-          args: ['instrument_info.100ms.BTCUSDT'],
+          args: ['tickers.BTCUSDT'],
         })
       );
     }
@@ -19,9 +19,9 @@ export class BybitSpotv1Websocket extends SharedWebsocket {
   onMessage = ({ data }: MessageEvent) => {
     if (!this.isDisposed) {
       try {
-        const ts = Number(data.match(/"timestamp_e6":"(\d+)"/)?.[1]) / 1000;
+        const ts = Number(data.match(/"ts":(\d+)/)?.[1]);
         const now = Number(new Date());
-        const diff = Math.round(now - ts);
+        const diff = now - ts;
         this.setLatency(diff);
       } catch {
         // do nothing
