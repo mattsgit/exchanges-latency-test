@@ -5,7 +5,7 @@ import TimeSyncCheck from '~/components/time-sync-check.component';
 const Home = () => {
   return (
     <main class="max-w-[920px] mx-auto text-gray-700 dark:text-gray-300 p-4">
-      <div class="text-center my-16">
+      <div class="text-center my-10">
                 <img 
           src="/gte-logo_ora.webp"
           alt="GTE Logo" 
