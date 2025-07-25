@@ -11,6 +11,7 @@ import { OKXFuturesWebsocket } from '~/exchanges/okx-futures.ws';
 import { OKXSpotWebsocket } from '~/exchanges/okx-spot.ws';
 import { WooXFuturesWebsocket } from '~/exchanges/woo-x-futures.ws';
 import { WooXSpotWebsocket } from '~/exchanges/woo-x-spot.ws';
+import { KuCoinCORSWebsocket } from '~/exchanges/kucoin-cors';
 
 const bybitSpot = new BybitSpotWebsocket();
 const bybitFutures = new BybitFuturesWebsocket();
@@ -29,6 +30,8 @@ const okxFutures = new OKXFuturesWebsocket();
 const wooxSpot = new WooXSpotWebsocket();
 const wooxFutures = new WooXFuturesWebsocket();
 
+const kucoin = new KuCoinCORSWebsocket();
+
 const LatencyTable = () => {
   onMount(() => {
     bybitSpot.connect();
@@ -42,6 +45,7 @@ const LatencyTable = () => {
     okxFutures.connect();
     wooxSpot.connect();
     wooxFutures.connect();
+    kucoin.connect();
   });
 
   onCleanup(() => {
@@ -56,6 +60,7 @@ const LatencyTable = () => {
     okxFutures.close();
     wooxSpot.close();
     wooxFutures.close();
+    kucoin.close();
   });
 
   const showWarning = createMemo(
@@ -70,7 +75,8 @@ const LatencyTable = () => {
       okxSpot.hasError() ||
       okxFutures.hasError() ||
       wooxSpot.hasError() ||
-      wooxFutures.hasError()
+      wooxFutures.hasError() ||
+      kucoin.hasError()
   );
 
   const exchanges = [
@@ -140,6 +146,12 @@ const LatencyTable = () => {
       latency: wooxFutures.latency,
       link: 'https://x.woo.org/en/trade?ref=safecex',
     },
+    {
+      name: 'KuCoin',
+      stream: 'CORS error timing',
+      latency: kucoin.latency,
+      link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG',
+    },
   ];
 
   return (
@@ -178,22 +190,6 @@ const LatencyTable = () => {
             </tr>
           )}
         </For>
-        <tr>
-          <td>
-            <a
-              href="https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG"
-              class="border-b border-dotted"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              KuCoin
-            </a>
-          </td>
-          <td />
-          <td class="text-right font-mono text-orange-500 text-xs">
-            Not supported (CORS)
-          </td>
-        </tr>
       </tbody>
     </table>
     </>
