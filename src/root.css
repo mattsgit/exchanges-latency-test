@@ -9,3 +9,21 @@ html, body {
 * {
   box-sizing: border-box;
 }
+
+/* Logo shadow that adapts to light/dark mode */
+.logo-shadow {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+}
+
+.dark .logo-shadow {
+  filter: drop-shadow(0 8px 16px rgba(255, 255, 255, 0.2));
+}
+
+/* Text shadow that adapts to light/dark mode */
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark .text-shadow {
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
+}
