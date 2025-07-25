@@ -3,4 +3,5 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [solid({ ssr: false })],
+  base: '/exchanges-latency-test/', // GitHub Pages base path
 });
