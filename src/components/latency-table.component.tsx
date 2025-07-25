@@ -5,7 +5,6 @@ import {
   binanceFutures,
   bybitSpot,
   bybitFutures,
-  bybitFuturesv3,
   hyperliquid,
   kucoin,
   okxSpot,
@@ -19,7 +18,6 @@ const LatencyTable = () => {
     binanceSpot.connect();
     binanceFutures.connect();
     bybitFutures.connect();
-    bybitFuturesv3.connect();
     bybitSpot.connect();
     hyperliquid.connect();
     kucoin.connect();
@@ -33,7 +31,6 @@ const LatencyTable = () => {
     binanceSpot.close();
     binanceFutures.close();
     bybitFutures.close();
-    bybitFuturesv3.close();
     bybitSpot.close();
     hyperliquid.close();
     kucoin.close();
@@ -48,7 +45,6 @@ const LatencyTable = () => {
       binanceSpot.hasError() ||
       binanceFutures.hasError() ||
       bybitFutures.hasError() ||
-      bybitFuturesv3.hasError() ||
       bybitSpot.hasError() ||
       hyperliquid.hasError() ||
       kucoin.hasError() ||
@@ -66,26 +62,20 @@ const LatencyTable = () => {
       link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0',
     },
     {
-      name: 'Binance USD-M Futures',
+      name: 'Binance Futures',
       stream: 'BTCUSDT@trade',
       latency: binanceFutures.latency,
       link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0',
     },
     {
-      name: 'Bybit Futures v3',
-      stream: 'tickers.BTCUSDT',
-      latency: bybitFuturesv3.latency,
-      link: 'https://partner.bybit.com/b/safecex',
-    },
-    {
-      name: 'Bybit Futures v5',
+      name: 'Bybit Futures',
       stream: 'tickers.BTCUSDT',
       latency: bybitFutures.latency,
       link: 'https://partner.bybit.com/b/safecex',
     },
 
     {
-      name: 'Bybit Spot v5',
+      name: 'Bybit Spot',
       stream: 'tickers.BTCUSDT',
       latency: bybitSpot.latency,
       link: 'https://partner.bybit.com/b/safecex',

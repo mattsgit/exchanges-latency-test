@@ -9,7 +9,6 @@ import {
   binanceFutures,
   bybitSpot,
   bybitFutures,
-  bybitFuturesv3,
   hyperliquid,
   kucoin,
   okxSpot,
@@ -40,8 +39,7 @@ const aggregateLatencyData = () => {
   // Collect all current latency values
   const bybitLatencies = [
     bybitSpot.latency(),
-    bybitFutures.latency(), 
-    bybitFuturesv3.latency()
+    bybitFutures.latency()
   ].filter(l => l > 0);
 
   const binanceLatencies = [

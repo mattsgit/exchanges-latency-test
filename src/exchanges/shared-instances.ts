@@ -1,7 +1,6 @@
 import { BinanceFuturesWebsocket } from './binance-futures.ws';
 import { BinanceSpotWebsocket } from './binance-spot.ws';
 import { BybitFuturesWebsocket } from './bybit-futures.ws';
-import { BybitFuturesv3Websocket } from './bybit-futures-v3.ws';
 import { BybitSpotWebsocket } from './bybit-spot.ws';
 import { HyperliquidWebsocket } from './hyperliquid.ws';
 import { KuCoinCORSWebsocket } from './kucoin-cors';
@@ -15,7 +14,6 @@ export const binanceSpot = new BinanceSpotWebsocket();
 export const binanceFutures = new BinanceFuturesWebsocket();
 export const bybitSpot = new BybitSpotWebsocket();
 export const bybitFutures = new BybitFuturesWebsocket();
-export const bybitFuturesv3 = new BybitFuturesv3Websocket();
 export const hyperliquid = new HyperliquidWebsocket();
 export const kucoin = new KuCoinCORSWebsocket();
 export const okxSpot = new OKXSpotWebsocket();
