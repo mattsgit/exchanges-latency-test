@@ -1,5 +1,6 @@
 import type { Accessor, Setter } from 'solid-js';
 import { createSignal } from 'solid-js';
+import { compensateLatency } from '~/utils/baseline-latency';
 
 export class SharedWebsocket {
   ws?: WebSocket;
@@ -11,19 +12,25 @@ export class SharedWebsocket {
   setHasError: Setter<boolean>;
 
   latency: Accessor<number>;
-  setLatency: Setter<number>;
+  private setLatencyRaw: Setter<number>;
   
   constructor(endpoint: string) {
     this.endpoint = endpoint;
 
     const [latency, setLatency] = createSignal(0);
     this.latency = latency;
-    this.setLatency = setLatency;
+    this.setLatencyRaw = setLatency;
 
     const [hasError, setHasError] = createSignal(false);
     this.hasError = hasError;
     this.setHasError = setHasError;
   }
+
+  // Public method to set latency with baseline compensation
+  setLatency = (rawLatency: number) => {
+    const compensatedLatency = compensateLatency(rawLatency);
+    this.setLatencyRaw(compensatedLatency);
+  };
 
 
   connect = () => {

@@ -1,6 +1,7 @@
 import LatencyTable from '~/components/latency-table.component';
 import PingTable from '~/components/ping-table.component';
 import TimeSyncCheck from '~/components/time-sync-check.component';
+import BaselineInfo from '~/components/baseline-info.component';
 
 const Home = () => {
   return (
@@ -12,10 +13,11 @@ const Home = () => {
           class="mx-auto mb-1 h-40 md:h-48 w-auto logo-shadow"
         />
          <h1 class="text-3xl md:text-4xl font-black text-orange-500 dark:text-orange-400 uppercase tracking-wider text-shadow" style="font-family: 'Orbitron', monospace;">
-           EXCHANGES LATENCY TESTER
+           EXCHANGE LATENCY TESTER
          </h1>
       </div>
       <TimeSyncCheck />
+      <BaselineInfo />
       <LatencyTable />
       <div class="h-12" />
       <PingTable />
