@@ -8,7 +8,7 @@ const Home = () => {
     <main class="max-w-[920px] mx-auto text-gray-700 dark:text-gray-300 p-4">
       <div class="text-center my-16">
                 <img 
-          src={`${import.meta.env.BASE_URL}gte-logo_ora.webp`}
+          src="/gte-logo_ora.webp"
           alt="GTE Logo" 
           class="mx-auto mb-1 h-40 md:h-48 w-auto logo-shadow"
         />
