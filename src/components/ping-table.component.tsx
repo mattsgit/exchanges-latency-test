@@ -1,84 +1,98 @@
-import { forEachSeries } from 'p-iteration';
-import { For, onCleanup, onMount } from 'solid-js';
+import { For, createEffect, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
-import { avg, max, min } from '~/utils/avg.utils';
-import { sleep } from '~/utils/sleep.utils';
-import { pingURL } from '~/utils/xhr-ping.utils';
+import { avg, p95, p99, max } from '~/utils/percentile.utils';
 
-const [exchanges, setExchanges] = createStore([
-  {
-    name: 'Bybit /v3/public/time',
-    pings: [] as number[],
-    url: 'https://api.bybit.com/v3/public/time',
-    link: 'https://partner.bybit.com/b/safecex',
-  },
-  {
-    name: 'Bybit /v2/public/time',
-    pings: [] as number[],
-    url: 'https://api.bybit.com/v2/public/time',
-    link: 'https://partner.bybit.com/b/safecex',
-  },
-  {
-    name: 'Bybit /spot/v1/time',
-    pings: [] as number[],
-    url: 'https://api.bybit.com/spot/v1/time',
-    link: 'https://partner.bybit.com/b/safecex',
-  },
-  {
-    name: 'Binance Spot',
-    pings: [] as number[],
-    url: 'https://api.binance.com/api/v3/time',
-    link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0',
-  },
-  {
-    name: 'Binance USD-M Futures',
-    pings: [] as number[],
-    url: 'https://fapi.binance.com/fapi/v1/time',
-    link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0',
-  },
-  {
-    name: 'Woo X',
-    pings: [] as number[],
-    url: 'https://api.woo.org/v1/public/info/spot_btc_usdt',
-    link: 'https://x.woo.org/en/trade?ref=safecex',
-  },
-  {
-    name: 'OKX',
-    pings: [] as number[],
-    url: 'https://www.okx.com/api/v5/public/time',
-    link: 'https://www.okx.com/join/SAFECEX',
-  },
-  {
-    name: 'KuCoin',
-    pings: [] as number[],
-    url: 'https://api.kucoin.com/api/v1/timestamp',
-    link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG',
-  },
+// Import the shared exchange instances
+import {
+  bybitSpot,
+  bybitFutures,
+  bybitFuturesv3,
+  bybitSpotv3,
+  bybitSpotv1,
+  binanceSpot,
+  binanceFutures,
+  okxSpot,
+  okxFutures,
+  wooxSpot,
+  wooxFutures,
+  kucoin
+} from '~/exchanges/shared-instances';
+
+const SLIDING_WINDOW_SIZE = 1000; // Keep last 1000 samples
+
+interface AggregatedExchange {
+  name: string;
+  latencies: number[];
+  link: string;
+}
+
+const [aggregatedData, setAggregatedData] = createStore<AggregatedExchange[]>([
+  { name: 'Bybit', latencies: [], link: 'https://partner.bybit.com/b/safecex' },
+  { name: 'Binance', latencies: [], link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0' },
+  { name: 'OKX', latencies: [], link: 'https://www.okx.com/join/SAFECEX' },
+  { name: 'Woo X', latencies: [], link: 'https://x.woo.org/en/trade?ref=safecex' },
+  { name: 'KuCoin', latencies: [], link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG' },
 ]);
 
-let timeoutId: NodeJS.Timeout;
-const ping = async () => {
-  await forEachSeries(exchanges, async (exchange, idx) => {
-    try {
-      const latency = await pingURL(exchange.url);
-      setExchanges(idx, 'pings', exchange.pings.length, latency);
-      await sleep(500);
-    } catch {
-      // do nothing
-    }
-  });
+// Function to aggregate latency data from all exchange instances
+const aggregateLatencyData = () => {
+  // Collect all current latency values
+  const bybitLatencies = [
+    bybitSpot.latency(),
+    bybitFutures.latency(), 
+    bybitFuturesv3.latency(),
+    bybitSpotv3.latency(),
+    bybitSpotv1.latency()
+  ].filter(l => l > 0);
 
-  timeoutId = setTimeout(() => ping(), 500);
+  const binanceLatencies = [
+    binanceSpot.latency(),
+    binanceFutures.latency()
+  ].filter(l => l > 0);
+
+  const okxLatencies = [
+    okxSpot.latency(),
+    okxFutures.latency()
+  ].filter(l => l > 0);
+
+  const wooxLatencies = [
+    wooxSpot.latency(),
+    wooxFutures.latency()
+  ].filter(l => l > 0);
+
+  const kucoinLatencies = [
+    kucoin.latency()
+  ].filter(l => l > 0);
+
+  // Update aggregated data with sliding window
+  const updateExchangeData = (index: number, newLatencies: number[]) => {
+    if (newLatencies.length > 0) {
+      const avgLatency = Math.round(newLatencies.reduce((a, b) => a + b, 0) / newLatencies.length);
+      const currentLatencies = [...aggregatedData[index].latencies, avgLatency];
+      const slidingWindow = currentLatencies.length > SLIDING_WINDOW_SIZE 
+        ? currentLatencies.slice(-SLIDING_WINDOW_SIZE)
+        : currentLatencies;
+      
+      setAggregatedData(index, 'latencies', slidingWindow);
+    }
+  };
+
+  updateExchangeData(0, bybitLatencies);    // Bybit
+  updateExchangeData(1, binanceLatencies);  // Binance  
+  updateExchangeData(2, okxLatencies);      // OKX
+  updateExchangeData(3, wooxLatencies);     // Woo X
+  updateExchangeData(4, kucoinLatencies);   // KuCoin
 };
 
 const PingTable = () => {
-  onMount(() => {
-    ping();
-  });
+  // Set up reactive effect to aggregate data when exchange latencies change
+  createEffect(() => {
+    const interval = setInterval(() => {
+      aggregateLatencyData();
+    }, 2000); // Update every 2 seconds
 
-  onCleanup(() => {
-    clearTimeout(timeoutId);
+    return () => clearInterval(interval);
   });
 
   return (
@@ -86,11 +100,11 @@ const PingTable = () => {
       <thead>
         <tr>
           <th class="text-left uppercase">Exchange</th>
-          <th class="text-right uppercase">Ping (AVG/MIN/MAX)</th>
+          <th class="text-right uppercase">Latency Percentiles<br/><span class="text-xs normal-case text-gray-500">Last {SLIDING_WINDOW_SIZE} samples</span></th>
         </tr>
       </thead>
       <tbody class="text-sm md:text-base">
-        <For each={exchanges}>
+        <For each={aggregatedData}>
           {(exchange) => (
             <tr>
               <td>
@@ -104,8 +118,19 @@ const PingTable = () => {
                 </a>
               </td>
               <td class="text-right font-mono text-xs md:text-sm">
-                {avg(exchange.pings)}ms / {min(exchange.pings)}ms /{' '}
-                {max(exchange.pings)}ms
+                {exchange.latencies.length > 0 ? (
+                  <>
+                    <div class="leading-tight">
+                      <div>Avg: {avg(exchange.latencies)}ms | P95: {p95(exchange.latencies)}ms</div>
+                      <div>P99: {p99(exchange.latencies)}ms | Max: {max(exchange.latencies)}ms</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
+                      ({exchange.latencies.length} samples)
+                    </div>
+                  </>
+                ) : (
+                  <span class="text-gray-400">Collecting data...</span>
+                )}
               </td>
             </tr>
           )}

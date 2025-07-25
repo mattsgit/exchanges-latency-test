@@ -42,35 +42,30 @@ export class KuCoinCORSWebsocket {
     }, 1000);
   };
 
-  measureCORSLatency = async () => {
+  measureCORSLatency = () => {
     const start = performance.now();
     
-    try {
-      // This will fail due to CORS, but we measure the timing
-      await fetch(this.endpoint, {
-        method: 'GET',
-        mode: 'cors' // This will trigger CORS error
-      });
-      
-    } catch (error) {
-      // CORS error occurred - measure the time it took
+    // Use Image element which typically generates less console noise for CORS errors
+    const img = new Image();
+    
+    const handleComplete = () => {
       const end = performance.now();
       const latency = Math.round(end - start);
+      this.setLatency(latency);
+      this.errorCount = 0;
+      this.setHasError(false);
       
-      // Only update latency if we got a CORS error (expected)
-      if (error instanceof TypeError && error.message.includes('CORS') || 
-          error instanceof TypeError && error.message.includes('fetch')) {
-        this.setLatency(latency);
-        this.errorCount = 0;
-        this.setHasError(false);
-      } else {
-        // Unexpected error type
-        this.errorCount += 1;
-        if (this.errorCount >= 3) {
-          this.setHasError(true);
-        }
-      }
-    }
+      // Clean up
+      img.onload = null;
+      img.onerror = null;
+    };
+    
+    // Set up event handlers
+    img.onload = handleComplete;
+    img.onerror = handleComplete;
+    
+    // Trigger the request with a cache-busting parameter
+    img.src = `${this.endpoint}&_t=${Date.now()}`;
   };
 
   close = () => {

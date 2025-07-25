@@ -1,36 +1,19 @@
 import { For, Show, createMemo, onCleanup, onMount } from 'solid-js';
 
-import { BinanceFuturesWebsocket } from '~/exchanges/binance-futures.ws';
-import { BinanceSpotWebsocket } from '~/exchanges/binance-spot.ws';
-import { BybitFuturesv3Websocket } from '~/exchanges/bybit-futures-v3.ws';
-import { BybitFuturesWebsocket } from '~/exchanges/bybit-futures.ws';
-import { BybitSpotv1Websocket } from '~/exchanges/bybit-spot-v1.ws';
-import { BybitSpotv3Websocket } from '~/exchanges/bybit-spot-v3.ws';
-import { BybitSpotWebsocket } from '~/exchanges/bybit-spot.ws';
-import { OKXFuturesWebsocket } from '~/exchanges/okx-futures.ws';
-import { OKXSpotWebsocket } from '~/exchanges/okx-spot.ws';
-import { WooXFuturesWebsocket } from '~/exchanges/woo-x-futures.ws';
-import { WooXSpotWebsocket } from '~/exchanges/woo-x-spot.ws';
-import { KuCoinCORSWebsocket } from '~/exchanges/kucoin-cors';
-
-const bybitSpot = new BybitSpotWebsocket();
-const bybitFutures = new BybitFuturesWebsocket();
-
-const bybitFuturesv3 = new BybitFuturesv3Websocket();
-const bybitSpotv3 = new BybitSpotv3Websocket();
-
-const bybitSpotv1 = new BybitSpotv1Websocket();
-
-const binanceSpot = new BinanceSpotWebsocket();
-const binanceFutures = new BinanceFuturesWebsocket();
-
-const okxSpot = new OKXSpotWebsocket();
-const okxFutures = new OKXFuturesWebsocket();
-
-const wooxSpot = new WooXSpotWebsocket();
-const wooxFutures = new WooXFuturesWebsocket();
-
-const kucoin = new KuCoinCORSWebsocket();
+import {
+  bybitSpot,
+  bybitFutures,
+  bybitFuturesv3,
+  bybitSpotv3,
+  bybitSpotv1,
+  binanceSpot,
+  binanceFutures,
+  okxSpot,
+  okxFutures,
+  wooxSpot,
+  wooxFutures,
+  kucoin
+} from '~/exchanges/shared-instances';
 
 const LatencyTable = () => {
   onMount(() => {
