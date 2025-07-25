@@ -5,18 +5,17 @@ import { avg, p95, p99, max } from '~/utils/percentile.utils';
 
 // Import the shared exchange instances
 import {
+  binanceSpot,
+  binanceFutures,
   bybitSpot,
   bybitFutures,
   bybitFuturesv3,
-  bybitSpotv3,
-  bybitSpotv1,
-  binanceSpot,
-  binanceFutures,
+  hyperliquid,
+  kucoin,
   okxSpot,
   okxFutures,
   wooxSpot,
-  wooxFutures,
-  kucoin
+  wooxFutures
 } from '~/exchanges/shared-instances';
 
 const SLIDING_WINDOW_SIZE = 1000; // Keep last 1000 samples
@@ -28,11 +27,12 @@ interface AggregatedExchange {
 }
 
 const [aggregatedData, setAggregatedData] = createStore<AggregatedExchange[]>([
-  { name: 'Bybit', latencies: [], link: 'https://partner.bybit.com/b/safecex' },
   { name: 'Binance', latencies: [], link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0' },
+  { name: 'Bybit', latencies: [], link: 'https://partner.bybit.com/b/safecex' },
+  { name: 'Hyperliquid', latencies: [], link: 'https://hyperliquid.xyz/' },
+  { name: 'KuCoin', latencies: [], link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG' },
   { name: 'OKX', latencies: [], link: 'https://www.okx.com/join/SAFECEX' },
   { name: 'Woo X', latencies: [], link: 'https://x.woo.org/en/trade?ref=safecex' },
-  { name: 'KuCoin', latencies: [], link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG' },
 ]);
 
 // Function to aggregate latency data from all exchange instances
@@ -41,9 +41,7 @@ const aggregateLatencyData = () => {
   const bybitLatencies = [
     bybitSpot.latency(),
     bybitFutures.latency(), 
-    bybitFuturesv3.latency(),
-    bybitSpotv3.latency(),
-    bybitSpotv1.latency()
+    bybitFuturesv3.latency()
   ].filter(l => l > 0);
 
   const binanceLatencies = [
@@ -65,6 +63,10 @@ const aggregateLatencyData = () => {
     kucoin.latency()
   ].filter(l => l > 0);
 
+  const hyperliquidLatencies = [
+    hyperliquid.latency()
+  ].filter(l => l > 0);
+
   // Update aggregated data with sliding window
   const updateExchangeData = (index: number, newLatencies: number[]) => {
     if (newLatencies.length > 0) {
@@ -78,11 +80,12 @@ const aggregateLatencyData = () => {
     }
   };
 
-  updateExchangeData(0, bybitLatencies);    // Bybit
-  updateExchangeData(1, binanceLatencies);  // Binance  
-  updateExchangeData(2, okxLatencies);      // OKX
-  updateExchangeData(3, wooxLatencies);     // Woo X
-  updateExchangeData(4, kucoinLatencies);   // KuCoin
+  updateExchangeData(0, binanceLatencies);     // Binance
+  updateExchangeData(1, bybitLatencies);      // Bybit  
+  updateExchangeData(2, hyperliquidLatencies); // Hyperliquid
+  updateExchangeData(3, kucoinLatencies);     // KuCoin
+  updateExchangeData(4, okxLatencies);        // OKX
+  updateExchangeData(5, wooxLatencies);       // Woo X
 };
 
 const PingTable = () => {

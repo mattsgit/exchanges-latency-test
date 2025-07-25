@@ -1,110 +1,64 @@
 import { For, Show, createMemo, onCleanup, onMount } from 'solid-js';
 
 import {
+  binanceSpot,
+  binanceFutures,
   bybitSpot,
   bybitFutures,
   bybitFuturesv3,
-  bybitSpotv3,
-  bybitSpotv1,
-  binanceSpot,
-  binanceFutures,
+  hyperliquid,
+  kucoin,
   okxSpot,
   okxFutures,
   wooxSpot,
-  wooxFutures,
-  kucoin
+  wooxFutures
 } from '~/exchanges/shared-instances';
 
 const LatencyTable = () => {
   onMount(() => {
-    bybitSpot.connect();
-    bybitFutures.connect();
-    bybitFuturesv3.connect();
-    bybitSpotv3.connect();
-    bybitSpotv1.connect();
     binanceSpot.connect();
     binanceFutures.connect();
-    okxSpot.connect();
-    okxFutures.connect();
-    wooxSpot.connect();
-    wooxFutures.connect();
+    bybitFutures.connect();
+    bybitFuturesv3.connect();
+    bybitSpot.connect();
+    hyperliquid.connect();
     kucoin.connect();
+    okxFutures.connect();
+    okxSpot.connect();
+    wooxFutures.connect();
+    wooxSpot.connect();
   });
 
   onCleanup(() => {
-    bybitSpot.close();
-    bybitFutures.close();
-    bybitFuturesv3.close();
-    bybitSpotv3.close();
-    bybitSpotv1.close();
     binanceSpot.close();
     binanceFutures.close();
-    okxSpot.close();
-    okxFutures.close();
-    wooxSpot.close();
-    wooxFutures.close();
+    bybitFutures.close();
+    bybitFuturesv3.close();
+    bybitSpot.close();
+    hyperliquid.close();
     kucoin.close();
+    okxFutures.close();
+    okxSpot.close();
+    wooxFutures.close();
+    wooxSpot.close();
   });
 
   const showWarning = createMemo(
     () =>
-      bybitSpot.hasError() ||
-      bybitFutures.hasError() ||
-      bybitFuturesv3.hasError() ||
-      bybitSpotv3.hasError() ||
-      bybitSpotv1.hasError() ||
       binanceSpot.hasError() ||
       binanceFutures.hasError() ||
-      okxSpot.hasError() ||
+      bybitFutures.hasError() ||
+      bybitFuturesv3.hasError() ||
+      bybitSpot.hasError() ||
+      hyperliquid.hasError() ||
+      kucoin.hasError() ||
       okxFutures.hasError() ||
-      wooxSpot.hasError() ||
+      okxSpot.hasError() ||
       wooxFutures.hasError() ||
-      kucoin.hasError()
+      wooxSpot.hasError()
   );
 
   const exchanges = [
-    {
-      name: 'Bybit Futures v5',
-      stream: 'tickers.BTCUSDT',
-      latency: bybitFutures.latency,
-      link: 'https://partner.bybit.com/b/safecex',
-    },
-    {
-      name: 'Bybit Futures v3',
-      stream: 'tickers.BTCUSDT',
-      latency: bybitFuturesv3.latency,
-      link: 'https://partner.bybit.com/b/safecex',
-    },
-    {
-      name: 'Bybit Spot v5',
-      stream: 'tickers.BTCUSDT',
-      latency: bybitSpot.latency,
-      link: 'https://partner.bybit.com/b/safecex',
-    },
-    {
-      name: 'Bybit Spot v3',
-      stream: 'tickers.BTCUSDT',
-      latency: bybitSpotv3.latency,
-      link: 'https://partner.bybit.com/b/safecex',
-    },
-    {
-      name: 'Bybit Spot v1',
-      stream: 'tickers.BTCUSDT',
-      latency: bybitSpotv1.latency,
-      link: 'https://partner.bybit.com/b/safecex',
-    },
-    {
-      name: 'OKX Spot',
-      stream: 'tickers.BTC-USDT',
-      latency: okxSpot.latency,
-      link: 'https://www.okx.com/join/SAFECEX',
-    },
-    {
-      name: 'OKX Futures',
-      stream: 'tickers.BTC-USDT-SWAP',
-      latency: okxFutures.latency,
-      link: 'https://www.okx.com/join/SAFECEX',
-    },
     {
       name: 'Binance Spot',
       stream: 'BTCUSDT@trade',
@@ -118,10 +72,47 @@ const LatencyTable = () => {
       link: 'https://accounts.binance.com/en/register?ref=KOLLSXK0',
     },
     {
-      name: 'Woo X Spot',
-      stream: 'SPOT_BTC_USDT@ticker',
-      latency: wooxSpot.latency,
-      link: 'https://x.woo.org/en/trade?ref=safecex',
+      name: 'Bybit Futures v3',
+      stream: 'tickers.BTCUSDT',
+      latency: bybitFuturesv3.latency,
+      link: 'https://partner.bybit.com/b/safecex',
+    },
+    {
+      name: 'Bybit Futures v5',
+      stream: 'tickers.BTCUSDT',
+      latency: bybitFutures.latency,
+      link: 'https://partner.bybit.com/b/safecex',
+    },
+
+    {
+      name: 'Bybit Spot v5',
+      stream: 'tickers.BTCUSDT',
+      latency: bybitSpot.latency,
+      link: 'https://partner.bybit.com/b/safecex',
+    },
+    {
+      name: 'Hyperliquid',
+      stream: 'trades.BTC',
+      latency: hyperliquid.latency,
+      link: 'https://hyperliquid.xyz/',
+    },
+    {
+      name: 'KuCoin',
+      stream: 'CORS error timing',
+      latency: kucoin.latency,
+      link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG',
+    },
+    {
+      name: 'OKX Futures',
+      stream: 'tickers.BTC-USDT-SWAP',
+      latency: okxFutures.latency,
+      link: 'https://www.okx.com/join/SAFECEX',
+    },
+    {
+      name: 'OKX Spot',
+      stream: 'tickers.BTC-USDT',
+      latency: okxSpot.latency,
+      link: 'https://www.okx.com/join/SAFECEX',
     },
     {
       name: 'Woo X Futures',
@@ -130,10 +121,10 @@ const LatencyTable = () => {
       link: 'https://x.woo.org/en/trade?ref=safecex',
     },
     {
-      name: 'KuCoin',
-      stream: 'CORS error timing',
-      latency: kucoin.latency,
-      link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG',
+      name: 'Woo X Spot',
+      stream: 'SPOT_BTC_USDT@ticker',
+      latency: wooxSpot.latency,
+      link: 'https://x.woo.org/en/trade?ref=safecex',
     },
   ];
 

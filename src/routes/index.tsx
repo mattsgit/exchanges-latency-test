@@ -1,7 +1,6 @@
 import LatencyTable from '~/components/latency-table.component';
 import PingTable from '~/components/ping-table.component';
 import TimeSyncCheck from '~/components/time-sync-check.component';
-import BaselineInfo from '~/components/baseline-info.component';
 
 const Home = () => {
   return (
@@ -17,7 +16,6 @@ const Home = () => {
          </h1>
       </div>
       <TimeSyncCheck />
-      <BaselineInfo />
       <LatencyTable />
       <div class="h-12" />
       <PingTable />
