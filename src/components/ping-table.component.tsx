@@ -43,6 +43,18 @@ const [exchanges, setExchanges] = createStore([
     url: 'https://api.woo.org/v1/public/info/spot_btc_usdt',
     link: 'https://x.woo.org/en/trade?ref=safecex',
   },
+  {
+    name: 'OKX',
+    pings: [] as number[],
+    url: 'https://www.okx.com/api/v5/public/time',
+    link: 'https://www.okx.com/join/SAFECEX',
+  },
+  {
+    name: 'KuCoin',
+    pings: [] as number[],
+    url: 'https://api.kucoin.com/api/v1/timestamp',
+    link: 'https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG',
+  },
 ]);
 
 let timeoutId: NodeJS.Timeout;
@@ -98,36 +110,6 @@ const PingTable = () => {
             </tr>
           )}
         </For>
-        <tr>
-          <td>
-            <a
-              href="https://www.okx.com/join/SAFECEX"
-              class="border-b border-dotted"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              OKX
-            </a>
-          </td>
-          <td class="text-right font-mono text-orange-500 text-xs">
-            Not supported (CORS)
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a
-              href="https://www.kucoin.com/ucenter/signup?rcode=rMSUDAG"
-              class="border-b border-dotted"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              KuCoin
-            </a>
-          </td>
-          <td class="text-right font-mono text-orange-500 text-xs">
-            Not supported (CORS)
-          </td>
-        </tr>
       </tbody>
     </table>
   );
