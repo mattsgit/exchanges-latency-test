@@ -12,6 +12,7 @@ import {
   Title,
 } from 'solid-start';
 import './root.css';
+import DarkModeToggle from './components/dark-mode-toggle.component';
 
 const Root = () => {
   return (
@@ -35,7 +36,8 @@ const Root = () => {
           rel="stylesheet"
         />
       </Head>
-      <Body>
+      <Body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+        <DarkModeToggle />
         <Suspense>
           <ErrorBoundary>
             <Routes>

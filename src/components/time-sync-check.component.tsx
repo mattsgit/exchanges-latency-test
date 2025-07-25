@@ -38,7 +38,7 @@ const TimeSyncCheck = () => {
   return (
     <Show when={diff() > 1000}>
       <div class="w-full mb-12 flex items-center justify-center">
-        <div class="border-red-500 border-2 rounded-md bg-red-100 text-red-500 pt-1 pb-3 px-4 text-sm mb-8 inline-block">
+        <div class="border-red-500 dark:border-red-400 border-2 rounded-md bg-red-100 dark:bg-red-900/20 text-red-500 dark:text-red-400 pt-1 pb-3 px-4 text-sm mb-8 inline-block">
           <div class="m-2">
             Your computer's clock is out of sync by more than one second, which
             invalidate the latency test.
@@ -47,14 +47,14 @@ const TimeSyncCheck = () => {
             <ul class="list-disc">
               <li>
                 <a
-                  class="underline"
+                  class="underline hover:text-red-600 dark:hover:text-red-300"
                   href="https://support.apple.com/en-gb/guide/mac-help/mchlp2996/mac"
                 >
                   How to sync datetime on MacOS
                 </a>
               </li>
               <li>
-                <a class="underline" href="https://www.timesynctool.com">
+                <a class="underline hover:text-red-600 dark:hover:text-red-300" href="https://www.timesynctool.com">
                   How to sync datetime on Window
                 </a>
               </li>
