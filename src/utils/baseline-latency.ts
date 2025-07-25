@@ -7,10 +7,13 @@ const [systemLoad, setSystemLoad] = createSignal(0);
 // Measure baseline to a very fast, reliable endpoint
 const measureBaseline = async (): Promise<number> => {
   const measurements: number[] = [];
+  let fetchSucceeded = 0;
+  let fetchFailed = 0;
   
   // Test multiple times for accuracy
   for (let i = 0; i < 5; i++) {
     const start = performance.now();
+    let usedFallback = false;
     
     try {
       // Use a very fast, reliable endpoint (Cloudflare DNS)
@@ -18,6 +21,7 @@ const measureBaseline = async (): Promise<number> => {
         method: 'HEAD',
         cache: 'no-cache'
       });
+      fetchSucceeded++;
     } catch {
       // If that fails, use a data URL (measures pure browser overhead)
       await new Promise(resolve => {
@@ -25,14 +29,21 @@ const measureBaseline = async (): Promise<number> => {
         img.onload = img.onerror = resolve;
         img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
       });
+      fetchFailed++;
+      usedFallback = true;
     }
     
     const end = performance.now();
-    measurements.push(end - start);
+    const latency = end - start;
+    measurements.push(latency);
+    
+    console.log(`Baseline measurement ${i + 1}: ${latency.toFixed(1)}ms (${usedFallback ? 'fallback' : 'fetch'})`);
     
     // Small delay between measurements
     await new Promise(resolve => setTimeout(resolve, 100));
   }
+  
+  console.log(`Baseline summary: ${fetchSucceeded} fetch succeeded, ${fetchFailed} failed`);
   
   // Return median to avoid outliers
   measurements.sort((a, b) => a - b);
@@ -63,6 +74,7 @@ const initializeBaseline = async () => {
     setSystemLoad(load);
     
     console.log(`Baseline latency: ${baseline.toFixed(1)}ms, System load: ${load.toFixed(1)}ms`);
+    console.log(`Page origin: ${window.location.origin}, Protocol: ${window.location.protocol}`);
   } catch (error) {
     console.warn('Could not measure baseline latency:', error);
     setBaselineLatency(0);
