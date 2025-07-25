@@ -35,7 +35,8 @@ const Root = () => {
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Orbitron:wght@400;700;900&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} />
+        <link rel="icon" type="image/x-icon" href={`${import.meta.env.BASE_URL}favicon.ico?v=2`} />
+        <link rel="shortcut icon" type="image/x-icon" href={`${import.meta.env.BASE_URL}favicon.ico?v=2`} />
       </Head>
       <Body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
         <DarkModeToggle />
